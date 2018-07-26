@@ -1,0 +1,148 @@
+import tkinter as tk
+from math import asin, cos, sin, degrees, radians
+
+# °
+# Python 3.5.3
+
+class MenuButtons: # Menu with buttons for other applications
+    def __init__(self, master):
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.button1 = tk.Button(self.frame, text = "Heading Converter", width = 32, command = self.new_window_headingConverter)
+        self.button1.grid(row=2)
+        self.infobutton = tk.Button(self.frame, text="Info", width = 32, command = self.new_window_info)
+        self.infobutton.grid(row=0)
+        self.label = tk.Label(self.frame, height=1).grid(row=1)
+        self.bacbutton = tk.Button(self.frame, text = "Basic Azimuth Calculator", width = 32, command = self.new_window_basicAzimuthCalc)
+        self.bacbutton.grid(row=3)
+        self.frame.pack()
+
+    def new_window_headingConverter(self): # Opens Heading Converter window
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = HeadingConverter(self.newWindow)
+
+    def new_window_info(self): # Opens info window
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = InfoList(self.newWindow)
+
+    def new_window_basicAzimuthCalc(self):
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = BasicAzimuthCalculator(self.newWindow)
+
+
+class InfoList: # Window with a list of the button descriptions
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Info")
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
+        width = 285
+        height = 500
+        x = (screen_width/2) - (width/2)
+        y = (screen_height/2) - (height/2)
+        self.master.geometry("%dx%d+%d+%d" % (width, height, x+300, y))
+        self.frame = tk.Frame(self.master)
+
+        
+class HeadingConverter: # Heading converter application
+    def __init__(self, master):
+        self.res = tk.IntVar()
+        self.master = master
+        self.master.title("H.C.")
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
+        width = 135
+        height = 70
+        x = (screen_width/2) - (width/2)
+        y = (screen_height/2) - (height/2)
+        self.master.geometry("%dx%d+%d+%d" % (width, height, x+70, y-325))
+
+        self.frame1 = tk.Frame(self.master)
+        self.space = tk.Label(self.frame1).grid(row=0)
+        self.label = tk.Label(self.frame1, text="Input: ").grid(row=1,column=0)
+        self.entry = tk.Entry(self.frame1, width=3)
+        self.entry.grid(row=1,column=1)
+        self.entry.bind('<Return>', self.get_num)
+        self.label = tk.Label(self.frame1, text="°").grid(row=1,column=3)
+        self.result = tk.Label(self.frame1, textvariable=self.res, relief="raised").grid(row=2,column=1)
+        self.label = tk.Label(self.frame1, text="°").grid(row=2,column=3)
+        #self.subbutton = tk.Button(self.frame1, text="Submit", command = self.get_num)
+        #self.subbutton.grid(row=2,column=0)
+        self.frame1.pack()
+
+
+    def get_num(self, master): # Gets input info and converts it
+        entry = int(self.entry.get())
+        if entry > 360:
+            entry = 0
+        elif entry < 180:
+            entry += 180
+        elif entry >= 180:
+            entry -= 180
+        x = entry
+        return self.res.set(x)
+
+
+class BasicAzimuthCalculator:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Basic Azimuth Calculator")
+        self.frame = tk.Frame(self.master)
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
+        width = 135
+        height = 70
+        x = (screen_width/2) - (width/2)
+        y = (screen_height/2) - (height/2)
+        self.master.geometry("%dx%d+%d+%d" % (width, height, x-70, y-325))
+
+        self.label = tk.Label(self.frame, text="Inc").grid(row=1,column=0)
+        self.label = tk.Label(self.frame, text="Lat").grid(row=2,column=0)
+        self.incentry = tk.Entry(self.frame, width=8)
+        self.incentry.grid(row=1, column=1)
+        self.latentry = tk.Entry(self.frame, width=8)
+        self.latentry.grid(row=2, column=1)
+        self.frame.pack()
+
+    def calculateaz(self):
+        inc = radians(51.6)
+        lat = radians(28.5)
+        inc1 = cos(inc)
+        lat1 = cos(lat)
+
+        num = inc1/lat1
+        num = asin(num)
+        num = degrees(num)
+        num2 = 180 - num
+
+        print(str(num)[:5],"N ", str(num2)[:6],"S ")
+
+
+
+def main():
+    x = 0
+    y = 0
+    root = tk.Tk()
+    root.title("Space Calculators")
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    width = 285
+    height = 500
+    x = (screen_width/2) - (width/2)
+    y = (screen_height/2) - (height/2)
+
+    root.geometry("%dx%d+%d+%d" % (width, height, x, y))
+    app = MenuButtons(root)
+    res = tk.IntVar()
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
